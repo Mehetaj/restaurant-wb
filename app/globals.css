@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 12;
+  --background-end-rgb: 5, 5, 5;
+  
+  /* Ruyarestaurant colors */
+  --neon-blue: 0, 229, 255;
+  --neon-blue-dark: 0, 119, 255;
+  --neon-purple: 157, 78, 221;
+  --neon-purple-light: 199, 125, 255;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 186 100% 50%;
+    --primary-foreground: 0 0% 9%;
+    --secondary: 270 76% 58%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 279 56% 68%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 186 100% 50%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-gradient-to-b from-background-start to-background-end text-foreground;
+    background-attachment: fixed;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-orbitron tracking-wider;
+  }
+}
+
+@layer components {
+  .neon-glow {
+    text-shadow: 0 0 5px theme('colors.primary.DEFAULT'), 
+                0 0 10px theme('colors.primary.DEFAULT'),
+                0 0 20px theme('colors.primary.DEFAULT');
+  }
+  
+  .neon-glow-purple {
+    text-shadow: 0 0 5px theme('colors.secondary.DEFAULT'), 
+                0 0 10px theme('colors.secondary.DEFAULT'),
+                0 0 20px theme('colors.secondary.DEFAULT');
+  }
+  
+  .glass {
+    @apply bg-black/20 backdrop-blur-md border border-white/10 shadow-xl;
+  }
+
+  .hero-gradient {
+    background: linear-gradient(
+      135deg,
+      rgba(var(--neon-blue), 0.3) 0%,
+      rgba(var(--neon-purple), 0.3) 100%
+    );
+  }
+  
+  .glow-button {
+    @apply relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium transition-all bg-black/40 backdrop-blur-sm rounded-md border border-primary/50 group-hover:border-primary text-white;
+  }
+  
+  .glow-button:before {
+    @apply content-[''] absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary to-secondary opacity-0 transition-opacity duration-300 group-hover:opacity-20;
+  }
+  
+  .glow-button:after {
+    @apply content-[''] absolute inset-0 border border-primary rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100;
+    box-shadow: 0 0 15px theme('colors.primary.DEFAULT');
+  }
+}
+
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Font families */
+.font-sans {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-orbitron {
+  font-family: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Menu page filter animations */
+.menu-filter-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.menu-filter-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+.menu-filter-exit {
+  opacity: 1;
+}
+.menu-filter-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}
