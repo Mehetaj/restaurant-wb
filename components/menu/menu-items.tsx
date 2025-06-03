@@ -147,7 +147,7 @@ export function MenuItems({ items }: MenuItemsProps) {
                     <Badge className="bg-primary text-black border-none">Chef's Special</Badge>
                   )}
                   {selectedItem.isVegan && (
-                    <Badge variant="outline\" className="border-green-500 text-green-400">Vegan</Badge>
+                    <Badge variant="outline" className="border-green-500 text-green-400">Vegan</Badge>
                   )}
                 </div>
                 <span className="text-xl font-orbitron text-primary">${selectedItem.price}</span>
@@ -159,3 +159,4 @@ export function MenuItems({ items }: MenuItemsProps) {
     </>
   )
 }
+
