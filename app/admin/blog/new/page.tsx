@@ -16,14 +16,9 @@ export default function NewBlogPostPage() {
           <CardTitle>Blog Post Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <BlogPostForm
-            onSubmit={(values) => {
-              // TODO: Implement blog post creation
-              console.log(values);
-            }}
-          />
+          <BlogPostForm />
         </CardContent>
       </Card>
     </div>
   );
-} 
+}

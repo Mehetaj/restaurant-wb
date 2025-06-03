@@ -1,41 +1,120 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+'use client';
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "@/lib/toast-utils";
+import { saveBlogPost } from "@/lib/utils";
 
-const formSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  content: z.string().min(1, "Content is required"),
-  excerpt: z.string().min(1, "Excerpt is required"),
-  author: z.string().min(1, "Author is required"),
-  readTime: z.string().min(1, "Read time is required"),
-  featuredImage: z.string().url("Must be a valid URL"),
-  isPublished: z.boolean().default(false),
-  isFeatured: z.boolean().default(false),
-});
-
+export interface FormValues {
+  title: string;
+  content: string;
+  excerpt: string;
+  author: string;
+  readTime: string;
+  featuredImage: string;
+  isPublished: boolean;
+  isFeatured: boolean;
+}
 
 interface BlogPostFormProps {
   initialData?: FormValues;
-  onSubmit: (values: FormValues) => void;
 }
 
-export function BlogPostForm({ initialData, onSubmit }: BlogPostFormProps) {
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+export function BlogPostForm({ initialData }: BlogPostFormProps) {
+  const [formData, setFormData] = useState<FormValues>({
+    title: initialData?.title || "",
+    content: initialData?.content || "",
+    excerpt: initialData?.excerpt || "",
+    author: initialData?.author || "",
+    readTime: initialData?.readTime || "",
+    featuredImage: initialData?.featuredImage || "",
+    isPublished: initialData?.isPublished || false,
+    isFeatured: initialData?.isFeatured || false,
+  });
+
+  const [errors, setErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<Record<keyof FormValues, string>> = {};
+    let isValid = true;
+
+    if (!formData.title || formData.title.length < 2) {
+      newErrors.title = "Title must be at least 2 characters.";
+      isValid = false;
+    }
+
+    if (!formData.content || formData.content.length < 10) {
+      newErrors.content = "Content must be at least 10 characters.";
+      isValid = false;
+    }
+
+    if (!formData.excerpt || formData.excerpt.length < 10) {
+      newErrors.excerpt = "Excerpt must be at least 10 characters.";
+      isValid = false;
+    }
+
+    if (!formData.author || formData.author.length < 2) {
+      newErrors.author = "Author name must be at least 2 characters.";
+      isValid = false;
+    }
+
+    if (!formData.readTime) {
+      newErrors.readTime = "Read time is required.";
+      isValid = false;
+    }
+
+    if (!formData.featuredImage) {
+      newErrors.featuredImage = "Image URL is required.";
+      isValid = false;
+    } else {
+      try {
+        new URL(formData.featuredImage);
+      } catch (e) {
+        newErrors.featuredImage = "Please enter a valid image URL.";
+        isValid = false;
+      }
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name as keyof FormValues]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleSwitchChange = (name: keyof FormValues) => (checked: boolean): void => {
+    setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
+    if (validateForm()) {
+      try {
+        const form = e.target as HTMLFormElement;
+        const formData = new FormData(form);
+        const response = await saveBlogPost(formData);
+        if (response.success) {
+          toast.success("Success", "Blog post saved successfully!");
+          handleReset();
+        } else {
+          throw new Error("Failed to save blog post");
+        }
+      } catch (error) {
+        toast.error("Error", "Failed to save blog post. Please try again.");
+      }
+    }
+  };
+
+  const handleReset = (): void => {
+    setFormData({
       title: "",
       content: "",
       excerpt: "",
@@ -44,147 +123,143 @@ export function BlogPostForm({ initialData, onSubmit }: BlogPostFormProps) {
       featuredImage: "",
       isPublished: false,
       isFeatured: false,
-    },
-  });
+    });
+    setErrors({});
+  };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
+    <form action={saveBlogPost} onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
+      <div className="space-y-2">
+        <label htmlFor="title" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          Title
+        </label>
+        <Input
+          id="title"
           name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter blog post title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          placeholder="Enter blog post title"
+          value={formData.title}
+          onChange={handleChange}
+          className={errors.title ? "border-red-500" : ""}
         />
+        {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
+      </div>
 
-        <FormField
-          control={form.control}
+      <div className="space-y-2">
+        <label htmlFor="content" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          Content
+        </label>
+        <Textarea
+          id="content"
           name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Content</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Write your blog post content"
-                  className="min-h-[200px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          placeholder="Write your blog post content"
+          className={`min-h-[200px] ${errors.content ? "border-red-500" : ""}`}
+          value={formData.content}
+          onChange={handleChange}
         />
+        {errors.content && <p className="text-sm text-red-500">{errors.content}</p>}
+      </div>
 
-        <FormField
-          control={form.control}
+      <div className="space-y-2">
+        <label htmlFor="excerpt" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          Excerpt
+        </label>
+        <Textarea
+          id="excerpt"
           name="excerpt"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Excerpt</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Write a short excerpt"
-                  className="min-h-[100px]"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                A brief summary of the blog post
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
+          placeholder="Write a short excerpt"
+          className={`min-h-[100px] ${errors.excerpt ? "border-red-500" : ""}`}
+          value={formData.excerpt}
+          onChange={handleChange}
         />
+        <p className="text-sm text-muted-foreground">A brief summary of the blog post</p>
+        {errors.excerpt && <p className="text-sm text-red-500">{errors.excerpt}</p>}
+      </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label htmlFor="author" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Author
+          </label>
+          <Input
+            id="author"
             name="author"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Author</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter author name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            placeholder="Enter author name"
+            value={formData.author}
+            onChange={handleChange}
+            className={errors.author ? "border-red-500" : ""}
           />
+          {errors.author && <p className="text-sm text-red-500">{errors.author}</p>}
+        </div>
 
-          <FormField
-            control={form.control}
+        <div className="space-y-2">
+          <label htmlFor="readTime" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Read Time
+          </label>
+          <Input
+            id="readTime"
             name="readTime"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Read Time</FormLabel>
-                <FormControl>
-                  <Input placeholder="e.g., 5 min" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            placeholder="e.g., 5 min"
+            value={formData.readTime}
+            onChange={handleChange}
+            className={errors.readTime ? "border-red-500" : ""}
           />
+          {errors.readTime && <p className="text-sm text-red-500">{errors.readTime}</p>}
         </div>
+      </div>
 
-        <FormField
-          control={form.control}
+      <div className="space-y-2">
+        <label htmlFor="featuredImage" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+          Featured Image URL
+        </label>
+        <Input
+          id="featuredImage"
           name="featuredImage"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Featured Image URL</FormLabel>
-              <FormControl>
-                <Input placeholder="Enter image URL" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          placeholder="Enter image URL"
+          value={formData.featuredImage}
+          onChange={handleChange}
+          className={errors.featuredImage ? "border-red-500" : ""}
         />
+        {errors.featuredImage && <p className="text-sm text-red-500">{errors.featuredImage}</p>}
+      </div>
 
-        <div className="flex gap-4">
-          <FormField
-            control={form.control}
-            name="isPublished"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 space-y-0">
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Published</FormLabel>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="isFeatured"
-            render={({ field }) => (
-              <FormItem className="flex items-center gap-2 space-y-0">
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormLabel>Featured</FormLabel>
-              </FormItem>
-            )}
-          />
+      <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+        <div className="space-y-0.5">
+          <label htmlFor="isPublished" className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Published
+          </label>
+          <p className="text-sm text-muted-foreground">Make this post publicly available</p>
         </div>
+        <Switch
+          id="isPublished"
+          name="isPublished"
+          checked={formData.isPublished}
+          onCheckedChange={handleSwitchChange("isPublished")}
+        />
+      </div>
 
+      <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+        <div className="space-y-0.5">
+          <label htmlFor="isFeatured" className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            Featured
+          </label>
+          <p className="text-sm text-muted-foreground">Mark this as a featured post</p>
+        </div>
+        <Switch
+          id="isFeatured"
+          name="isFeatured"
+          checked={formData.isFeatured}
+          onCheckedChange={handleSwitchChange("isFeatured")}
+        />
+      </div>
+
+      <div className="flex justify-end gap-4">
+        <Button variant="outline" type="button" onClick={handleReset}>
+          Reset
+        </Button>
         <Button type="submit">
           {initialData ? "Update Post" : "Create Post"}
         </Button>
-      </form>
-    </Form>
+      </div>
+    </form>
   );
-} 
+}
