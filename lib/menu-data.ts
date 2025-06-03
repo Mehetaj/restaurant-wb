@@ -15,7 +15,7 @@ export type MenuItem = {
 export type Category = {
   id: string;
   name: string;
-  icon?: string;
+  icon: string; // Changed from string | undefined to string
 };
 
 export const categories: Category[] = [
