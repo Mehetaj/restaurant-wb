@@ -14,6 +14,12 @@
   --neon-purple-light: 199, 125, 255;
 }
 
+.light {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 245, 245, 245;
+  --background-end-rgb: 255, 255, 255;
+}
+
 @layer base {
   :root {
     --background: 0 0% 3.9%;
@@ -37,6 +43,28 @@
     --ring: 186 100% 50%;
     --radius: 0.5rem;
   }
+
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 98%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 186 100% 40%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 270 76% 48%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 90%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 279 56% 58%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 80%;
+    --input: 0 0% 80%;
+    --ring: 186 100% 40%;
+  }
 }
 
 @layer base {
@@ -45,7 +73,8 @@
   }
   
   body {
-    @apply bg-gradient-to-b from-background-start to-background-end text-foreground;
+    @apply text-foreground;
+    background: linear-gradient(to bottom, rgb(var(--background-start-rgb)), rgb(var(--background-end-rgb)));
     background-attachment: fixed;
   }
   
@@ -71,6 +100,14 @@
     @apply bg-black/20 backdrop-blur-md border border-white/10 shadow-xl;
   }
 
+  .dark .glass {
+    @apply bg-black/20 border-white/10;
+  }
+
+  .light .glass {
+    @apply bg-white/20 border-black/10;
+  }
+
   .hero-gradient {
     background: linear-gradient(
       135deg,
@@ -80,7 +117,15 @@
   }
   
   .glow-button {
-    @apply relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium transition-all bg-black/40 backdrop-blur-sm rounded-md border border-primary/50 group-hover:border-primary text-white;
+    @apply relative inline-flex items-center justify-center px-6 py-3 overflow-hidden font-medium transition-all rounded-md border text-white;
+  }
+
+  .dark .glow-button {
+    @apply bg-black/40 backdrop-blur-sm border-primary/50 group-hover:border-primary text-white;
+  }
+
+  .light .glow-button {
+    @apply bg-white/40 backdrop-blur-sm border-primary/50 group-hover:border-primary text-primary-foreground;
   }
   
   .glow-button:before {
@@ -97,6 +142,13 @@
   background-image: 
     linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.light .bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 

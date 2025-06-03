@@ -2,9 +2,8 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter, Orbitron } from 'next/font/google'
 import { Providers } from './providers'
-import { Navbar } from '@/components/layout/navbar'
-import { Footer } from '@/components/layout/footer'
-import { Toaster } from '@/components/ui/toaster'
+import { LayoutWrapper } from '@/components/layout/layout-wrapper'
+import { ToastManager } from '@/components/ui/toast-manager'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -29,17 +28,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${orbitron.variable} font-sans bg-background text-foreground`}>
+      <body className={`${inter.variable} ${orbitron.variable} font-sans`}>
         <Providers>
-          <div className="relative min-h-screen flex flex-col">
-            <div className="fixed inset-0 bg-grid-pattern opacity-5 pointer-events-none z-0" />
-            <Navbar />
-            <main className="flex-1 z-10">
-              {children}
-            </main>
-            <Footer />
-          </div>
-          <Toaster />
+          <ToastManager>
+            <div className="relative min-h-screen flex flex-col">
+              <div className="fixed inset-0 bg-grid-pattern opacity-5 pointer-events-none z-0" />
+              <LayoutWrapper>
+                {children}
+              </LayoutWrapper>
+            </div>
+          </ToastManager>
         </Providers>
       </body>
     </html>

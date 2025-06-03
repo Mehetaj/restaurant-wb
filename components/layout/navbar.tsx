@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -72,7 +73,8 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Button asChild className="group">
               <Link href="/reservations">
                 Book Now
@@ -82,16 +84,19 @@ export function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <button
-            className="md:hidden text-gray-100 hover:text-white focus:outline-none z-10"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
+          <div className="md:hidden flex items-center space-x-4">
+            <ThemeToggle />
+            <button
+              className="text-gray-100 hover:text-white focus:outline-none z-10"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
