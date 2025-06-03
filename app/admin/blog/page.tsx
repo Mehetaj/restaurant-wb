@@ -22,9 +22,9 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
-import { blogPosts } from '@/app/blog/page'
 import Link from 'next/link'
 import { BlogPostsTable } from '@/components/admin/blog/blog-posts-table'
+import { blogPosts } from '@/lib/blog-data'
 
 // Import blog data from the blog page
 // import { blogPosts } from '@/app/blog/page'
