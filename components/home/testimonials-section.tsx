@@ -128,7 +128,7 @@ export function TestimonialsSection() {
                       ))}
                     </div>
                     <blockquote className="text-gray-300 text-lg italic mb-4">
-                      "{testimonials[currentIndex].quote}"
+                      &rdquo;{testimonials[currentIndex].quote}&rdquo;
                     </blockquote>
                     <div>
                       <h4 className="font-orbitron text-white text-lg">

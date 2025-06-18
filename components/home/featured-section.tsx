@@ -54,7 +54,7 @@ export function FeaturedSection() {
             transition={{ duration: 0.6, delay: 0.2 }}
           >
             <p className="text-gray-400 max-w-2xl mx-auto">
-              Our chef's selection of innovative signature dishes that push the boundaries of culinary science and artistry.
+              Our chef&rsquo;s selection of innovative signature dishes that push the boundaries of culinary science and artistry.
             </p>
           </motion.div>
         </div>

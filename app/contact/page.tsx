@@ -43,7 +43,7 @@ export default function ContactPage() {
     },
     {
       question: "Is there a dress code?",
-      answer: "We recommend smart casual attire for our guests. While we don't enforce a strict dress code, we encourage an elegant appearance that matches our sophisticated dining atmosphere."
+      answer: "We recommend smart casual attire for our guests. While we don’t enforce a strict dress code, we encourage an elegant appearance that matches our sophisticated dining atmosphere."
     },
     {
       question: "Do you offer private dining or event spaces?",
@@ -80,7 +80,7 @@ export default function ContactPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-gray-300 md:text-lg"
             >
-              We'd love to hear from you. Reach out with any questions or feedback.
+              We’d love to hear from you. Reach out with any questions or feedback.
             </motion.p>
           </div>
         </div>
@@ -268,7 +268,7 @@ export default function ContactPage() {
                     </span>
                   </h2>
                   <p className="text-gray-300 mb-8">
-                    Thank you for reaching out to us, {formData.name}! We've received your message and will get back to you shortly.
+                    Thank you for reaching out to us, {formData.name}! We’ve received your message and will get back to you shortly.
                   </p>
                   <Button 
                     onClick={() => setFormSubmitted(false)}

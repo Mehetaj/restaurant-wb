@@ -253,40 +253,41 @@ export default function OpportunitiesPage() {
                   </div>
 
                   {expandedJob === job.id && (
-                    <div className="px-6 pb-6 pt-2 border-t border-white/10">
-                      <div className="mb-4">
-                        <h4 className="text-lg font-orbitron font-medium mb-2">Description</h4>
-                        <p className="text-gray-300">{job.description}</p>
-                      </div>
+  <div className="px-6 pb-6 pt-2 border-t border-white/10">
+    <div className="mb-4">
+      <h4 className="text-lg font-orbitron font-medium mb-2">Description</h4>
+      {/* Angus is a fictional character, please ensure that you are using real information or clearly indicate that this is a fictional example. */} 
+      <p className="text-gray-300">{job.description}</p>
+    </div>
 
-                      <div className="mb-4">
-                        <h4 className="text-lg font-orbitron font-medium mb-2">Requirements</h4>
-                        <ul className="list-disc pl-5 text-gray-300 space-y-1">
-                          {job.requirements.map((req, index) => (
-                            <li key={index}>{req}</li>
-                          ))}
-                        </ul>
-                      </div>
+    <div className="mb-4">
+      <h4 className="text-lg font-orbitron font-medium mb-2">Requirements</h4>
+      <ul className="list-disc pl-5 text-gray-300 space-y-1">
+        {job.requirements.map((req, index) => (
+          <li key={index}>{req}</li>
+        ))}
+      </ul>
+    </div>
 
-                      <div className="mb-6">
-                        <h4 className="text-lg font-orbitron font-medium mb-2">Benefits</h4>
-                        <ul className="list-disc pl-5 text-gray-300 space-y-1">
-                          {job.benefits.map((benefit, index) => (
-                            <li key={index}>{benefit}</li>
-                          ))}
-                        </ul>
-                      </div>
+    <div className="mb-6">
+      <h4 className="text-lg font-orbitron font-medium mb-2">Benefits</h4>
+      <ul className="list-disc pl-5 text-gray-300 space-y-1">
+        {job.benefits.map((benefit, index) => (
+          <li key={index}>{benefit}</li>
+        ))}
+      </ul>
+    </div>
 
-                      <Button 
-                        onClick={() => handleApplyClick(job.id)}
-                        className="w-full md:w-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
-                      >
-                        Apply Now <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                </motion.div>
-              ))
+    <Button 
+      onClick={() => handleApplyClick(job.id)}
+      className="w-full md:w-auto bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white"
+    >
+      Apply Now <ArrowRight className="ml-2 h-4 w-4" />
+    </Button>
+  </div>
+)}
+</motion.div>
+))
             ) : (
               <div className="text-center py-10">
                 <p className="text-gray-400">No positions available in this department at the moment.</p>
@@ -296,7 +297,6 @@ export default function OpportunitiesPage() {
         </div>
       </section>
 
-      {/* Application Form Section */}
       {showApplicationForm && (
         <section id="application-form" className="py-16 bg-black/30">
           <div className="container mx-auto px-4">
@@ -313,7 +313,7 @@ export default function OpportunitiesPage() {
                 </span>
               </h2>
               <p className="text-gray-300 mb-8 text-center">
-                Please fill out the form below to apply for this position. We'll review your application and contact you if there's a match.
+                Please fill out the form below to apply for this position. We’ll review your application and contact you if there’s a match.
               </p>
 
               <form className="space-y-6">
@@ -378,7 +378,7 @@ export default function OpportunitiesPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            transition = {{ duration: 0.7 }}
             viewport={{ once: true }}
             className="text-center max-w-3xl mx-auto mb-12"
           >
@@ -388,7 +388,7 @@ export default function OpportunitiesPage() {
               </span>
             </h2>
             <p className="text-gray-300">
-              Become part of a team that's redefining the culinary landscape through innovation and creativity.
+              Become part of a team that’s redefining the culinary landscape through innovation and creativity.
             </p>
           </motion.div>
 
@@ -405,7 +405,7 @@ export default function OpportunitiesPage() {
               </div>
               <h3 className="text-xl font-orbitron font-semibold mb-4">Innovation Culture</h3>
               <p className="text-gray-300">
-                Work in an environment that encourages experimentation, creativity, and pushing the boundaries of what's possible in culinary arts.
+                Work in an environment that encourages experimentation, creativity, and pushing the boundaries of what’s possible in culinary arts.
               </p>
             </motion.div>
 

@@ -75,13 +75,13 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-4 text-gray-300">
                 <p>
-                  Founded in 2023, Ruyawas born from a vision to revolutionize the dining experience by blending cutting-edge culinary techniques with immersive atmospheres and sustainable practices.
+                  Founded in 2023, Ruya was born from a vision to revolutionize the dining experience by blending cutting-edge culinary techniques with immersive atmospheres and sustainable practices.
                 </p>
                 <p>
                   Our founder, Chef Alexandra Chen, spent years studying molecular gastronomy and futuristic food design before bringing her vision to life in the heart of the city. What started as an experimental pop-up quickly gained recognition for its innovative approach to fine dining.
                 </p>
                 <p>
-                  Today, Ruyastands at the intersection of art, science, and gastronomy—creating memorable experiences that challenge perceptions and delight the senses. Each dish tells a story of innovation, each visit offers a journey into the future of food.
+                  Today, Ruya stands at the intersection of art, science, and gastronomy—creating memorable experiences that challenge perceptions and delight the senses. Each dish tells a story of innovation, each visit offers a journey into the future of food.
                 </p>
               </div>
             </motion.div>
@@ -135,7 +135,7 @@ export default function AboutPage() {
               </div>
               <h3 className="text-xl font-orbitron font-semibold mb-4">Sustainability</h3>
               <p className="text-gray-300">
-                We're committed to ethical sourcing, zero-waste practices, and reducing our environmental footprint while creating exceptional culinary experiences.
+                We’re committed to ethical sourcing, zero-waste practices, and reducing our environmental footprint while creating exceptional culinary experiences.
               </p>
             </motion.div>
 
@@ -174,7 +174,7 @@ export default function AboutPage() {
               </span>
             </h2>
             <p className="text-gray-300">
-              The visionaries and culinary artists behind's extraordinary experiences.
+              The visionaries and culinary artists behind Ruya’s extraordinary experiences.
             </p>
           </motion.div>
 
@@ -261,8 +261,9 @@ export default function AboutPage() {
               </span>
             </h2>
             <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-              We're always looking for passionate individuals who share our vision for innovative dining experiences. If you're creative, dedicated, and eager to push culinary boundaries, we'd love to hear from you.
+              We’re always looking for passionate individuals who share our vision for innovative dining experiences. If you’re creative, dedicated, and eager to push culinary boundaries, we’d love to hear from you.
             </p>
+            6
             <Link href="/opportunities">
               <motion.button
                 whileHover={{ scale: 1.05 }}

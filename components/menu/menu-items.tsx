@@ -69,7 +69,7 @@ export function MenuItems({ items }: MenuItemsProps) {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-80" />
                 {menuItem.isSpecial && (
                   <Badge className="absolute top-3 right-3 bg-primary text-black border-none font-medium">
-                    Chef's Special
+                    Chef&rsquo;s Special
                   </Badge>
                 )}
                 {menuItem.isVegan && (
@@ -144,7 +144,7 @@ export function MenuItems({ items }: MenuItemsProps) {
               <div className="flex justify-between items-center pt-4 border-t border-white/10">
                 <div className="flex gap-2">
                   {selectedItem.isSpecial && (
-                    <Badge className="bg-primary text-black border-none">Chef's Special</Badge>
+                    <Badge className="bg-primary text-black border-none">Chef&rsquo;s Special</Badge>
                   )}
                   {selectedItem.isVegan && (
                     <Badge variant="outline" className="border-green-500 text-green-400">Vegan</Badge>

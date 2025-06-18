@@ -59,7 +59,7 @@ export function ExperienceSection() {
               </span>
             </h2>
             <p className="text-gray-300 mb-8">
-              At Ruya, we've reimagined what dining can be. Our restaurant combines cutting-edge technology, innovative culinary techniques, and artistic presentation to create an experience that engages all your senses.
+              At Ruya, we&rsquo;ve reimagined what dining can be. Our restaurant combines cutting-edge technology, innovative culinary techniques, and artistic presentation to create an experience that engages all your senses.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

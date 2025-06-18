@@ -379,7 +379,7 @@ export default function ReservationsPage() {
                 </span>
               </h2>
               <p className="text-gray-300 text-lg mb-8">
-                Thank you for your reservation, {reservationDetails.name}! We're looking forward to hosting you.
+                Thank you for your reservation, {reservationDetails.name}! We&rsquo;re looking forward to hosting you.
               </p>
               <div className="glass p-6 rounded-lg bg-black/30 mb-8 text-left">
                 <h3 className="text-lg font-orbitron font-medium mb-4 text-center">Your Reservation Details</h3>
