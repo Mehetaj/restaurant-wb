@@ -1,265 +1,173 @@
 'use client';
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { toast } from "@/lib/toast-utils";
-import { saveBlogPost } from "@/lib/utils";
+import 'react-quill/dist/quill.snow.css';
 
-export interface FormValues {
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+interface BlogPost {
+  id: number;
   title: string;
-  content: string;
   excerpt: string;
+  content?: string;
+  date: string;
   author: string;
-  readTime: string;
-  featuredImage: string;
-  isPublished: boolean;
-  isFeatured: boolean;
+  authorRole?: string;
+  authorImage?: string;
+  image: string;
+  slug: string;
+  tags?: string[];
+  readTime?: string;
 }
 
-interface BlogPostFormProps {
-  initialData?: FormValues;
-}
-
-export function BlogPostForm({ initialData }: BlogPostFormProps) {
-  const [formData, setFormData] = useState<FormValues>({
-    title: initialData?.title || "",
-    content: initialData?.content || "",
-    excerpt: initialData?.excerpt || "",
-    author: initialData?.author || "",
-    readTime: initialData?.readTime || "",
-    featuredImage: initialData?.featuredImage || "",
-    isPublished: initialData?.isPublished || false,
-    isFeatured: initialData?.isFeatured || false,
+export function BlogPostForm() {
+  const [formData, setFormData] = useState<Partial<BlogPost>>({
+    title: "",
+    excerpt: "",
+    content: "",
+    author: "",
+    authorImage: "",
+    authorRole: "",
+    image: "",
+    slug: "",
+    tags: [],
+    readTime: "",
   });
 
-  const [errors, setErrors] = useState<Partial<Record<keyof FormValues, string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<keyof BlogPost, string>>>({});
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<Record<keyof FormValues, string>> = {};
-    let isValid = true;
+  const validate = (): boolean => {
+    const newErrors: Partial<Record<keyof BlogPost, string>> = {};
+    let valid = true;
 
     if (!formData.title || formData.title.length < 2) {
       newErrors.title = "Title must be at least 2 characters.";
-      isValid = false;
-    }
-
-    if (!formData.content || formData.content.length < 10) {
-      newErrors.content = "Content must be at least 10 characters.";
-      isValid = false;
+      valid = false;
     }
 
     if (!formData.excerpt || formData.excerpt.length < 10) {
       newErrors.excerpt = "Excerpt must be at least 10 characters.";
-      isValid = false;
+      valid = false;
     }
 
-    if (!formData.author || formData.author.length < 2) {
-      newErrors.author = "Author name must be at least 2 characters.";
-      isValid = false;
+    if (!formData.author) {
+      newErrors.author = "Author is required.";
+      valid = false;
     }
 
-    if (!formData.readTime) {
-      newErrors.readTime = "Read time is required.";
-      isValid = false;
+    if (!formData.image) {
+      newErrors.image = "Image URL is required.";
+      valid = false;
     }
 
-    if (!formData.featuredImage) {
-      newErrors.featuredImage = "Image URL is required.";
-      isValid = false;
-    } else {
-      try {
-        new URL(formData.featuredImage);
-      } catch (e) {
-        newErrors.featuredImage = "Please enter a valid image URL.";
-        isValid = false;
-      }
+    if (!formData.slug) {
+      newErrors.slug = "Slug is required.";
+      valid = false;
     }
 
     setErrors(newErrors);
-    return isValid;
+    return valid;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof FormValues]) {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "tags" ? value.split(",").map(tag => tag.trim()) : value,
+    }));
+
+    if (errors[name as keyof BlogPost]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  const handleSwitchChange = (name: keyof FormValues) => (checked: boolean): void => {
-    setFormData((prev) => ({ ...prev, [name]: checked }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      try {
-        const form = e.target as HTMLFormElement;
-        const formData = new FormData(form);
-        const response = await saveBlogPost(formData);
-        if (response.success) {
-          toast.success("Success", "Blog post saved successfully!");
-          handleReset();
-        } else {
-          throw new Error("Failed to save blog post");
-        }
-      } catch (error) {
-        toast.error("Error", "Failed to save blog post. Please try again.");
+    if (!validate()) return;
+
+    const newPost: BlogPost = {
+      id: Date.now(),
+      ...formData,
+      date: new Date().toISOString(),
+      tags: formData.tags || [],
+    } as BlogPost;
+
+    try {
+      const res = await fetch("/api/blog", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newPost),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success("Blog created successfully");
+        setFormData({
+          title: "",
+          excerpt: "",
+          content: "",
+          author: "",
+          authorImage: "",
+          authorRole: "",
+          image: "",
+          slug: "",
+          tags: [],
+          readTime: "",
+        });
+      } else {
+        toast.error(data.message || "Something went wrong");
       }
+    } catch (err) {
+      toast.error("Network error");
     }
   };
 
-  const handleReset = (): void => {
-    setFormData({
-      title: "",
-      content: "",
-      excerpt: "",
-      author: "",
-      readTime: "",
-      featuredImage: "",
-      isPublished: false,
-      isFeatured: false,
-    });
-    setErrors({});
-  };
-
   return (
-    <form action={saveBlogPost} onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
-      <div className="space-y-2">
-        <label htmlFor="title" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Title
-        </label>
-        <Input
-          id="title"
-          name="title"
-          placeholder="Enter blog post title"
-          value={formData.title}
-          onChange={handleChange}
-          className={errors.title ? "border-red-500" : ""}
-        />
-        {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
-      </div>
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
+      <Input name="title" placeholder="Title" value={formData.title} onChange={handleChange} />
+      {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
 
-      <div className="space-y-2">
-        <label htmlFor="content" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Content
-        </label>
-        <Textarea
-          id="content"
-          name="content"
-          placeholder="Write your blog post content"
-          className={`min-h-[200px] ${errors.content ? "border-red-500" : ""}`}
-          value={formData.content}
-          onChange={handleChange}
-        />
-        {errors.content && <p className="text-sm text-red-500">{errors.content}</p>}
-      </div>
+      <Textarea name="excerpt" placeholder="Excerpt" value={formData.excerpt} onChange={handleChange} />
+      {errors.excerpt && <p className="text-sm text-red-500">{errors.excerpt}</p>}
 
-      <div className="space-y-2">
-        <label htmlFor="excerpt" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Excerpt
-        </label>
-        <Textarea
-          id="excerpt"
-          name="excerpt"
-          placeholder="Write a short excerpt"
-          className={`min-h-[100px] ${errors.excerpt ? "border-red-500" : ""}`}
-          value={formData.excerpt}
-          onChange={handleChange}
-        />
-        <p className="text-sm text-muted-foreground">A brief summary of the blog post</p>
-        {errors.excerpt && <p className="text-sm text-red-500">{errors.excerpt}</p>}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label htmlFor="author" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Author
-          </label>
-          <Input
-            id="author"
-            name="author"
-            placeholder="Enter author name"
-            value={formData.author}
-            onChange={handleChange}
-            className={errors.author ? "border-red-500" : ""}
-          />
-          {errors.author && <p className="text-sm text-red-500">{errors.author}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="readTime" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Read Time
-          </label>
-          <Input
-            id="readTime"
-            name="readTime"
-            placeholder="e.g., 5 min"
-            value={formData.readTime}
-            onChange={handleChange}
-            className={errors.readTime ? "border-red-500" : ""}
-          />
-          {errors.readTime && <p className="text-sm text-red-500">{errors.readTime}</p>}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <label htmlFor="featuredImage" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-          Featured Image URL
-        </label>
-        <Input
-          id="featuredImage"
-          name="featuredImage"
-          placeholder="Enter image URL"
-          value={formData.featuredImage}
-          onChange={handleChange}
-          className={errors.featuredImage ? "border-red-500" : ""}
-        />
-        {errors.featuredImage && <p className="text-sm text-red-500">{errors.featuredImage}</p>}
-      </div>
-
-      <div className="flex flex-row items-center justify-between rounded-lg border p-4">
-        <div className="space-y-0.5">
-          <label htmlFor="isPublished" className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Published
-          </label>
-          <p className="text-sm text-muted-foreground">Make this post publicly available</p>
-        </div>
-        <Switch
-          id="isPublished"
-          name="isPublished"
-          checked={formData.isPublished}
-          onCheckedChange={handleSwitchChange("isPublished")}
+      {/* Content with React Quill */}
+      <div>
+        <label className="block text-sm font-medium mb-1">Content</label>
+        <ReactQuill
+          theme="snow"
+          value={formData.content || ""}
+          onChange={(value) => setFormData((prev) => ({ ...prev, content: value }))}
+          className="bg-white"
+          placeholder="Write your blog content here..."
         />
       </div>
 
-      <div className="flex flex-row items-center justify-between rounded-lg border p-4">
-        <div className="space-y-0.5">
-          <label htmlFor="isFeatured" className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-            Featured
-          </label>
-          <p className="text-sm text-muted-foreground">Mark this as a featured post</p>
-        </div>
-        <Switch
-          id="isFeatured"
-          name="isFeatured"
-          checked={formData.isFeatured}
-          onCheckedChange={handleSwitchChange("isFeatured")}
-        />
-      </div>
+      <Input name="author" placeholder="Author" value={formData.author} onChange={handleChange} />
+      {errors.author && <p className="text-sm text-red-500">{errors.author}</p>}
 
-      <div className="flex justify-end gap-4">
-        <Button variant="outline" type="button" onClick={handleReset}>
-          Reset
-        </Button>
-        <Button type="submit">
-          {initialData ? "Update Post" : "Create Post"}
-        </Button>
-      </div>
+      <Input name="authorRole" placeholder="Author Role (optional)" value={formData.authorRole} onChange={handleChange} />
+
+      <Input name="authorImage" placeholder="Author Image URL (optional)" value={formData.authorImage} onChange={handleChange} />
+
+      <Input name="image" placeholder="Blog Image URL" value={formData.image} onChange={handleChange} />
+      {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
+
+      <Input name="slug" placeholder="Slug" value={formData.slug} onChange={handleChange} />
+      {errors.slug && <p className="text-sm text-red-500">{errors.slug}</p>}
+
+      <Input name="tags" placeholder="Tags (comma-separated)" value={formData.tags?.join(", ") || ""} onChange={handleChange} />
+
+      <Input name="readTime" placeholder="Read Time (e.g., 5 min)" value={formData.readTime} onChange={handleChange} />
+
+      <Button type="submit">Create Blog Post</Button>
     </form>
   );
 }

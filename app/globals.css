@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 10, 10, 12;
-  --background-end-rgb: 5, 5, 5;
+  --foreground-rgb: 255, 255, 255; /* White text for dark mode */
+  --background-start-rgb: 10, 10, 12; /* Dark mode gradient start */
+  --background-end-rgb: 5, 5, 5; /* Dark mode gradient end */
   
   /* Ruyarestaurant colors */
   --neon-blue: 0, 229, 255;
@@ -15,15 +15,15 @@
 }
 
 .light {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 245, 245, 245;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 0, 0, 0; /* Matte black text for light mode */
+  --background-start-rgb: 255, 255, 255; /* Pure white for light mode */
+  --background-end-rgb: 255, 255, 255; /* Pure white (no gradient) */
 }
 
 @layer base {
   :root {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
+    --background: 0 0% 3.9%; /* Dark mode background */
+    --foreground: 0 0% 98%; /* Dark mode text */
     --card: 0 0% 3.9%;
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
@@ -45,24 +45,24 @@
   }
 
   .light {
-    --background: 0 0% 98%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 98%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 98%;
-    --popover-foreground: 0 0% 3.9%;
+    --background: 0 0% 100%; /* Pure white background */
+    --foreground: 0 0% 0%; /* Matte black text */
+    --card: 0 0% 100%; /* Pure white for cards */
+    --card-foreground: 0 0% 0%; /* Black text for cards */
+    --popover: 0 0% 100%; /* Pure white for popovers */
+    --popover-foreground: 0 0% 0%; /* Black text for popovers */
     --primary: 186 100% 40%;
-    --primary-foreground: 0 0% 98%;
+    --primary-foreground: 0 0% 0%; /* Black for primary elements */
     --secondary: 270 76% 48%;
-    --secondary-foreground: 0 0% 98%;
+    --secondary-foreground: 0 0% 0%; /* Black for secondary elements */
     --muted: 0 0% 90%;
     --muted-foreground: 0 0% 40%;
     --accent: 279 56% 58%;
-    --accent-foreground: 0 0% 98%;
+    --accent-foreground: 0 0% 0%; /* Black for accents */
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 80%;
-    --input: 0 0% 80%;
+    --destructive-foreground: 0 0% 0%; /* Black for destructive actions */
+    --border: 0 0% 80%; /* Light gray border */
+    --input: 0 0% 80%; /* Light gray input */
     --ring: 186 100% 40%;
   }
 }
@@ -74,7 +74,7 @@
   
   body {
     @apply text-foreground;
-    background: linear-gradient(to bottom, rgb(var(--background-start-rgb)), rgb(var(--background-end-rgb)));
+    background: rgb(var(--background-start-rgb)); /* Use single color, no gradient */
     background-attachment: fixed;
   }
   
@@ -90,10 +90,18 @@
                 0 0 20px theme('colors.primary.DEFAULT');
   }
   
+  .light .neon-glow {
+    text-shadow: none; /* Remove neon glow in light mode */
+  }
+  
   .neon-glow-purple {
     text-shadow: 0 0 5px theme('colors.secondary.DEFAULT'), 
                 0 0 10px theme('colors.secondary.DEFAULT'),
                 0 0 20px theme('colors.secondary.DEFAULT');
+  }
+  
+  .light .neon-glow-purple {
+    text-shadow: none; /* Remove purple neon glow in light mode */
   }
   
   .glass {
@@ -105,7 +113,7 @@
   }
 
   .light .glass {
-    @apply bg-white/20 border-black/10;
+    @apply bg-white border-black/10; /* Solid white, no transparency or blur */
   }
 
   .hero-gradient {
@@ -114,6 +122,10 @@
       rgba(var(--neon-blue), 0.3) 0%,
       rgba(var(--neon-purple), 0.3) 100%
     );
+  }
+  
+  .light .hero-gradient {
+    background: none; /* Remove gradient in light mode */
   }
   
   .glow-button {
@@ -125,16 +137,24 @@
   }
 
   .light .glow-button {
-    @apply bg-white/40 backdrop-blur-sm border-primary/50 group-hover:border-primary text-primary-foreground;
+    @apply bg-white border-black text-black; /* Solid white bg, black text and border */
   }
   
   .glow-button:before {
     @apply content-[''] absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary to-secondary opacity-0 transition-opacity duration-300 group-hover:opacity-20;
   }
   
+  .light .glow-button:before {
+    @apply opacity-0; /* Disable gradient effect in light mode */
+  }
+  
   .glow-button:after {
     @apply content-[''] absolute inset-0 border border-primary rounded-md opacity-0 transition-opacity duration-300 group-hover:opacity-100;
     box-shadow: 0 0 15px theme('colors.primary.DEFAULT');
+  }
+  
+  .light .glow-button:after {
+    @apply opacity-0; /* Disable glow effect in light mode */
   }
 }
 
@@ -146,10 +166,7 @@
 }
 
 .light .bg-grid-pattern {
-  background-image: 
-    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-image: none; /* Remove grid pattern in light mode */
 }
 
 /* Font families */
